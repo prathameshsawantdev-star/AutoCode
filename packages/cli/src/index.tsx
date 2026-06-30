@@ -4,12 +4,14 @@ import { Header } from "./components/header";
 import StatusBar from "./components/status-bar";
 import { InputBar } from "./components/input-bar";
 import { ToastProvider } from "./providers/toast";
+import { KeyboardLayerProvider } from "./providers/keyboard-layer";
 
 
 function App() {
   return (
-    <ToastProvider>
-      <box 
+    <KeyboardLayerProvider>
+      <ToastProvider>
+       <box 
       alignItems="center"
       justifyContent="center"
       gap={2}
@@ -22,9 +24,13 @@ function App() {
         </box>
        
     </box>
-    </ToastProvider>
+     </ToastProvider>
+    </KeyboardLayerProvider>
   );
 }
 
-const renderer = await createCliRenderer();
+const renderer = await createCliRenderer({
+  targetFps: 60,
+  exitOnCtrlC: false 
+});
 createRoot(renderer).render(<App />);

@@ -3,6 +3,7 @@ import { useMemo, useRef, useState, type RefObject } from "react"
 import type { Command } from "../types"
 import {  getFilteredCommands } from "../filter-commands"
 import { useKeyboard } from "@opentui/react"
+import { useKeyboardLayer } from "../../../providers/keyboard-layer"
 
 type UseCommandMenuReturn = {
     showCommandMenu: boolean,
@@ -19,6 +20,7 @@ export const UseCommandMenu = (): UseCommandMenuReturn => {
     const [showCommandMenu, setshowCommandMenu ] = useState<boolean>(false)
     const scrollRef = useRef<ScrollBoxRenderable>(null)
     const [selectedIndex, setSelectedIndex] = useState(0)
+    const { push, pop, isTopLevel } = useKeyboardLayer()
 
     const commandQuery = showCommandMenu && textvalue?.startsWith("/") ? textvalue : ""
     const filteredCommands = useMemo(() => getFilteredCommands(commandQuery), [commandQuery])
@@ -35,8 +37,14 @@ export const UseCommandMenu = (): UseCommandMenuReturn => {
         const cmdName = text.startsWith("/") ? text : null
         if(cmdName !== null && !cmdName.includes(" ")){
             setshowCommandMenu(true)
+            push("command", () => {
+                setshowCommandMenu(false)
+                pop("command")
+                return true 
+            })
         } else {
             setshowCommandMenu(false)
+            pop("command")
         }
     }
 
@@ -44,18 +52,20 @@ export const UseCommandMenu = (): UseCommandMenuReturn => {
             const cmd = filteredCommands[index]
             if(cmd){
                 setshowCommandMenu(false)
+                pop("command")
             }
             return cmd
         }
 
     useKeyboard((key) => {
-        if(!showCommandMenu){
+        if(!showCommandMenu && !isTopLevel("command")){
             return 
         }
 
         if (key.name ==="escape" ){
             key.preventDefault()
             setshowCommandMenu(false)
+            pop("command")
         } else if (key.name === "up" ){
             key.preventDefault()
             setSelectedIndex((i) => {

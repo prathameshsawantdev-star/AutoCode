@@ -8,6 +8,7 @@ import type { Command } from "./command-menu/types";
 import { UseCommandMenu } from "./command-menu/hooks/use-command-menu";
 import StatusBar from "./status-bar";
 import { useToastContext } from "../providers/toast";
+import { useKeyboardLayer } from "../providers/keyboard-layer";
 
 
 type Props = {
@@ -37,6 +38,22 @@ export function InputBar({ onSubmit, disabled = false }: Props) {
     resolveCommand,
     setSelectedIndex,
   } = UseCommandMenu();
+
+  const { isTopLevel, setResponder } = useKeyboardLayer()
+
+  useEffect(() => {
+    setResponder("base", () => {
+      if(disabled) return false
+
+      const textarea = textareaRef.current
+      if(textarea && textarea.plainText.length > 0){
+        textarea.setText("")
+        return true 
+      }
+
+      return false 
+    })
+  }, [disabled, setResponder])
 
   const handleTextareaContentChange = useCallback(() => {
     const textarea = textareaRef.current;
@@ -147,7 +164,7 @@ export function InputBar({ onSubmit, disabled = false }: Props) {
           )}
           <textarea
             ref={textareaRef}
-            focused={!disabled}
+            focused={!disabled && isTopLevel("base") || isTopLevel("command")}
             keyBindings={TEXTAREA_KEY_BINDINGS}
             onContentChange={handleTextareaContentChange}
             placeholder={`Ask anything... "Fix a bug in the database"`}
