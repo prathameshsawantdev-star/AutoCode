@@ -10,6 +10,7 @@ import StatusBar from "./status-bar";
 import { useToastContext } from "../providers/toast";
 import { useKeyboardLayer } from "../providers/keyboard-layer";
 import { useDialog } from "../providers/dialog";
+import { useTheme } from "../theme";
 
 
 type Props = {
@@ -42,6 +43,7 @@ export function InputBar({ onSubmit, disabled = false }: Props) {
   } = UseCommandMenu();
 
   const { isTopLevel, setResponder } = useKeyboardLayer()
+  const { colors } = useTheme()
 
   useEffect(() => {
     setResponder("base", () => {
@@ -143,7 +145,7 @@ export function InputBar({ onSubmit, disabled = false }: Props) {
           justifyContent="center"
           paddingX={2}
           paddingY={1}
-          backgroundColor="#1A1A24"
+          backgroundColor={colors.background}
           width="100%"
           gap={1}
         >
@@ -153,7 +155,7 @@ export function InputBar({ onSubmit, disabled = false }: Props) {
               bottom="100%"
               left={0}
               width="100%"
-              backgroundColor="#1A1A24"
+              backgroundColor={colors.dialogSurface}
               zIndex={10}
             >
               <CommandMenu
