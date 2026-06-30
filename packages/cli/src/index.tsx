@@ -5,11 +5,13 @@ import StatusBar from "./components/status-bar";
 import { InputBar } from "./components/input-bar";
 import { ToastProvider } from "./providers/toast";
 import { KeyboardLayerProvider } from "./providers/keyboard-layer";
+import { DialogProvider } from "./providers/dialog";
 
 
 function App() {
   return (
     <KeyboardLayerProvider>
+      <DialogProvider>
       <ToastProvider>
        <box 
       alignItems="center"
@@ -25,6 +27,7 @@ function App() {
        
     </box>
      </ToastProvider>
+     </DialogProvider>
     </KeyboardLayerProvider>
   );
 }

@@ -9,6 +9,7 @@ import { UseCommandMenu } from "./command-menu/hooks/use-command-menu";
 import StatusBar from "./status-bar";
 import { useToastContext } from "../providers/toast";
 import { useKeyboardLayer } from "../providers/keyboard-layer";
+import { useDialog } from "../providers/dialog";
 
 
 type Props = {
@@ -28,6 +29,7 @@ export function InputBar({ onSubmit, disabled = false }: Props) {
   const onSubmitRef = useRef<() => void>(() => {});
   const renderer = useRenderer();
   const toast = useToastContext()
+  const dialog = useDialog()
 
   const {
     showCommandMenu,
@@ -87,6 +89,7 @@ export function InputBar({ onSubmit, disabled = false }: Props) {
       command.action({
         exit: () => renderer.destroy(),
         toast,
+        dialog 
       });
     } else {
       textarea.insertText(command.value + " ");
