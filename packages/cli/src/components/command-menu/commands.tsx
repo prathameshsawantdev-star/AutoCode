@@ -7,6 +7,7 @@ export const COMMANDS: Command[] = [
     value: "/new",
     action: (ctx) => {
      // ctx.navigate("/");
+     ctx.toast.show({ message: "Created new conversation" })
     },
   },
   {
@@ -14,6 +15,7 @@ export const COMMANDS: Command[] = [
     description: "Switch agents",
     value: "/agents",
     action: (ctx) => {
+       ctx.toast.show({ message: "Switching to different agents" })
       /* 
        ctx.dialog.open({
         title: "Select Agent",
@@ -27,6 +29,7 @@ export const COMMANDS: Command[] = [
     description: "Select AI model for generation",
     value: "/models",
     action: (ctx) => {
+      ctx.toast.show({ message: "Switching to different agents" })
       /* 
       ctx.dialog.open({
         title: "Select Model",
@@ -45,6 +48,7 @@ export const COMMANDS: Command[] = [
     description: "Browse past sessions",
     value: "/sessions",
     action: (ctx) => {
+      ctx.toast.show({ message: "Switching to different agents" })
       /* 
       
       ctx.dialog.open({
@@ -59,6 +63,7 @@ export const COMMANDS: Command[] = [
     description: "Change color theme",
     value: "/theme",
     action: (ctx) => {
+      ctx.toast.show({ message: "Switching to different agents" })
       /* 
        ctx.dialog.open({
         title: "Select Theme",
@@ -72,6 +77,7 @@ export const COMMANDS: Command[] = [
     description: "Sign in with your browser",
     value: "/login",
     action: async (ctx) => {
+      ctx.toast.show({ message: "Switching to different agents" })
      /* 
         ctx.toast.show({ message: "Opening browser to sign in..." });
 
@@ -93,6 +99,7 @@ export const COMMANDS: Command[] = [
     description: "Sign out of your account",
     value: "/logout",
     action: (ctx) => {
+      ctx.toast.show({ message: "Switching to different agents" })
       /* 
         clearAuth();
       ctx.toast.show({ variant: "success", message: "Signed out" });
@@ -104,6 +111,7 @@ export const COMMANDS: Command[] = [
     description: "Buy more credits",
     value: "/upgrade",
     action: async (ctx) => {
+      ctx.toast.show({ message: "Switching to different agents" })
       /* 
        ctx.toast.show({ message: "Opening credits checkout..." });
 
@@ -125,6 +133,7 @@ export const COMMANDS: Command[] = [
     description: "Open billing portal in your browser",
     value: "/usage",
     action: async (ctx) => {
+      ctx.toast.show({ message: "Switching to different agents" })
       /* 
        ctx.toast.show({ message: "Opening billing portal..." });
 
@@ -146,6 +155,7 @@ export const COMMANDS: Command[] = [
     description: "Quit the application",
     value: "/exit",
     action: (ctx) => {
+      ctx.toast.show({ message: "Switching to different agents" })
       ctx.exit();
     },
   },
