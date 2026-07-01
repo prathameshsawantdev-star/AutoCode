@@ -3,7 +3,7 @@ import { InputBar } from '../input-bar'
 import { TextAttributes } from '@opentui/core'
 import { Spinner } from '../spinner'
 type Props = {
-    children: React.ReactNode,
+    children?: React.ReactNode,
     onSubmit: (input: string) => void, 
     inputDisabled?: boolean, 
     loading?: boolean 
