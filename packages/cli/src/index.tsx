@@ -3,7 +3,6 @@ import { createRoot } from "@opentui/react";
 import { Header } from "./components/header";
 import StatusBar from "./components/status-bar";
 import { InputBar } from "./components/input-bar";
-import { ToastProvider } from "./providers/toast";
 import { KeyboardLayerProvider } from "./providers/keyboard-layer";
 import { DialogProvider } from "./providers/dialog";
 import { ThemeProvider, useTheme } from "./theme";

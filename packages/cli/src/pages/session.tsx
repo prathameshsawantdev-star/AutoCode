@@ -6,7 +6,7 @@ const Session = () => {
   const { id } = useParams()
   return (
    <SessionShell onSubmit={() => {}} loading inputDisabled>
-    {id}
+    <text>{id}</text>
    </SessionShell>
   )
 }

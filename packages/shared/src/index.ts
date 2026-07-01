@@ -4,7 +4,8 @@ export {
     type SupportedChatModelId,
     type SupportedChatModel,
     type ModelPricing,
-    type SupportedProvider
+    type SupportedProvider,
+    DEFAULT_CHAT_MODEL_ID
 } from "./models"
 
 export {

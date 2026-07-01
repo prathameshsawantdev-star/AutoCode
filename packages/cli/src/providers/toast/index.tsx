@@ -8,7 +8,7 @@ export type ToastContextValue = {
 
 const ToastContext = createContext<ToastContextValue | null>(null)
 
-export function useToastContext ():ToastContextValue {
+export function useToast():ToastContextValue {
     const value =  useContext(ToastContext)
     if (!value)
         throw new Error("Toast must be withing provider")

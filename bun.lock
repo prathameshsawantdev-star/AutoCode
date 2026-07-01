@@ -14,14 +14,19 @@
     "packages/cli": {
       "name": "my-opentui-project",
       "dependencies": {
+        "@autocode/server": "workspace:*",
         "@opentui/core": "^0.4.2",
         "@opentui/react": "^0.4.2",
         "@types/react": "^19.2.17",
+        "hono": "^4.12.27",
         "opentui-spinner": "^0.0.7",
         "react": "^19.2.6",
         "react-router": "^8.1.0",
+        "zod": "^4.4.3",
       },
       "devDependencies": {
+        "@autocode/server": "workspace:*",
+        "@autocode/shared": "workspace:*",
         "@types/bun": "latest",
       },
       "peerDependencies": {

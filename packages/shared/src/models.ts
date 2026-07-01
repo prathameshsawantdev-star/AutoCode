@@ -65,6 +65,8 @@ export const SUPPORTED_CHAT_MODELS = [
 export type SupportedChatModel = (typeof SUPPORTED_CHAT_MODELS)[number]
 export type SupportedChatModelId = SupportedChatModel["id"]
 
+export const DEFAULT_CHAT_MODEL_ID = "claude-sonnet-4-6"
+
 export function findSupportedChatModel(modelId: string){
     return SUPPORTED_CHAT_MODELS.find(model => model.id === modelId)
 }

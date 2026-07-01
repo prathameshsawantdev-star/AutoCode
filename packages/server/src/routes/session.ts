@@ -52,13 +52,11 @@ const createSessionValidator = zValidator("json", createSessionSchema, (result, 
 })
 
 const app = new Hono()
-
-app.get("/", (c) => {
+.get("/", (c) => {
     const result = sessions.map(({ id, title, createdAt }) => ({ id, title, createdAt }))
     return c.json(result) 
 })
-
-app.get("/:id", async (c) => {
+.get("/:id", async (c) => {
     // MOCK: Uncomment to simulate slow session loading 
     //await new Promise((r) => setTimeout(r, 5000))
 
@@ -73,9 +71,7 @@ app.get("/:id", async (c) => {
     }
 
     return c.json(session)
-})
-
-app 
+}) 
 .post("/", createSessionValidator, async (c) => {
 // MOCK: Uncomment to simulate slow session loading 
     //await new Promise((r) => setTimeout(r, 5000))

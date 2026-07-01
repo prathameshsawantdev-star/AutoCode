@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect, useContext } from "react";
 import type { TextareaRenderable } from "@opentui/core";
 import { useRenderer } from "@opentui/react";
 import type { KeyBinding } from "@opentui/core";
@@ -7,10 +7,10 @@ import { CommandMenu } from "./command-menu";
 import type { Command } from "./command-menu/types";
 import { UseCommandMenu } from "./command-menu/hooks/use-command-menu";
 import StatusBar from "./status-bar";
-import { useToastContext } from "../providers/toast";
 import { useKeyboardLayer } from "../providers/keyboard-layer";
 import { useDialog } from "../providers/dialog";
 import { useTheme } from "../theme";
+import { useToast } from "../providers/toast";
 
 
 type Props = {
@@ -29,7 +29,7 @@ export function InputBar({ onSubmit, disabled = false }: Props) {
   const textareaRef = useRef<TextareaRenderable>(null);
   const onSubmitRef = useRef<() => void>(() => {});
   const renderer = useRenderer();
-  const toast = useToastContext()
+  const toast = useToast()
   const dialog = useDialog()
 
   const {
