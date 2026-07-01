@@ -7,39 +7,33 @@ import { ToastProvider } from "./providers/toast";
 import { KeyboardLayerProvider } from "./providers/keyboard-layer";
 import { DialogProvider } from "./providers/dialog";
 import { ThemeProvider, useTheme } from "./theme";
+import { ThemedRoot } from "./layout/theme-root";
+import { createMemoryRouter, createBrowserRouter, RouterProvider } from "react-router";
+import RootLayout from "./layout/root-layout";
+import Home from "./pages/home";
+import NewSession from "./pages/new-session";
+import Session from "./pages/session";
 
-const ThemedRoot = () => {
-  const { colors } = useTheme()
+
+
+const router = createMemoryRouter([
+  {
+    path: "/",
+    element: <RootLayout />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "sessions/new", element: <NewSession /> },
+      { path: "sessions/:sessionId", element: <Session /> },
+    ]
+  }
+])
+
+function App() {
   return(
-    <box 
-      alignItems="center"
-      justifyContent="center"
-      gap={2}
-      backgroundColor={colors.background}
-      width="100%" height="100%">
-
-        <Header />
-        <box width="100%" maxWidth={78} paddingX={2} >
-           <InputBar onSubmit={() => {}} />
-        </box>
-       
-    </box>
+    <RouterProvider router={router} />
   )
 }
 
-function App() {
-  return (
-    <KeyboardLayerProvider>
-     <ThemeProvider>
-       <DialogProvider>
-      <ToastProvider>
-       <ThemedRoot />
-     </ToastProvider>
-     </DialogProvider>
-     </ThemeProvider>
-    </KeyboardLayerProvider>
-  );
-}
 
 const renderer = await createCliRenderer({
   targetFps: 60,
