@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router'
 import { useTheme } from '../theme'
 import { Header } from '../components/header'
 import { InputBar } from '../components/input-bar'
+import { Spinner } from '../components/spinner'
 
 const Home = () => {
   const navigate = useNavigate()
@@ -27,7 +28,6 @@ const Home = () => {
         <box width="100%" maxWidth={78} paddingX={2} >
            <InputBar onSubmit={handleSubmit} />
         </box>
-       
     </box>)
 }
 

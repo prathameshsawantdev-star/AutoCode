@@ -1,15 +1,13 @@
 import React from 'react'
 import { useParams } from 'react-router'
+import SessionShell from '../components/message/session-shell'
 
 const Session = () => {
   const { id } = useParams()
   return (
-    <box
-     flexGrow={1}
-     padding={2}
-    >   
-     <text>Session Id: {id}</text>
-    </box>
+   <SessionShell onSubmit={() => {}} loading inputDisabled>
+    {id}
+   </SessionShell>
   )
 }
 
