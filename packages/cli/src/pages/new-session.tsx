@@ -11,37 +11,39 @@ import { apiClient } from '../../lib/api-client'
 import { DEFAULT_CHAT_MODEL_ID } from '@autocode/shared'
 import { getErrorMessage } from '../../lib/http-error'
 
-const newSessionStateSchema = z.object({
-  message: z.string()
-}) 
 
-const NewSession = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const { colors } = useTheme()
-  const toast = useToast()
-  const hasStartedRef = useRef(false)
+const newSessionStateSchema = z.object({
+  message: z.string(),
+});
+
+export function NewSession() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const toast = useToast();
+  const hasStartedRef = useRef(false);
 
   const state = useMemo(() => {
-    const parsed = newSessionStateSchema.safeParse(location.state)
-    return parsed.success ? parsed.data : null 
+    const parsed = newSessionStateSchema.safeParse(location.state);
+    return parsed.success ? parsed.data : null;
   }, [location.state])
-  
+
+  // Guard: if navigated here directly without state, go home
   useEffect(() => {
-    if(!state){
-      navigate("/", { replace: true })
+    if (!state) {
+      navigate("/", { replace: true });
     }
-  }, [navigate, state])
+  }, [state, navigate]);
 
+  // Create the session on mount — this screen exists to do this
   useEffect(() => {
-    if(!state || hasStartedRef.current) return 
+    if (!state || hasStartedRef.current) return;
 
-    hasStartedRef.current = true 
-    let ignore = false 
+    hasStartedRef.current = true;
 
+    let ignore = false;
     const createSession = async () => {
-      try{
-        const res = await apiClient.sessions.$post({ 
+      try {
+        const res = await apiClient.sessions.$post({
           json: {
             title: state.message.slice(0, 100),
             cwd: process.cwd(),
@@ -49,43 +51,44 @@ const NewSession = () => {
               role: "USER",
               content: state.message,
               mode: "BUILD",
-              model: DEFAULT_CHAT_MODEL_ID
-            }
-          }
-        })
+              model: DEFAULT_CHAT_MODEL_ID,
+            },
+          },
+        });
 
-        if (ignore) return 
-        if(!res.ok){
-          throw new Error(await getErrorMessage(res))
+        if (ignore) return;
+        if (!res.ok) {
+          throw new Error(await getErrorMessage(res));
         }
-        const session = await res.json()
-        navigate(`/session/${session.id}`, { replace: true, state: { session }})
-
-      } catch (error){
-        if(ignore) return 
+        const session = await res.json();
+        navigate(
+          `/sessions/${session.id}`,
+          { replace: true, state: { session } }
+        );
+      } catch (error) {
+        if (ignore) return;
         toast.show({
           variant: "error",
-          message: error instanceof Error ? error.message : "Failed to load session"
-        })
-        navigate("/", { replace: true })
+          message: error instanceof Error ? error.message : "Failed to create session",
+        });
+        navigate("/", { replace: true });
       }
-    }
+    };
 
-    createSession()
-
+    createSession();
     return () => {
-      ignore = true 
-    }
-  }, [state, navigate, toast])
+      ignore = true;
+    };
+  }, [state, navigate, toast]);
 
-  if (!state?.message) return null
-  
+  if (!state) return null;
 
   return (
-   <SessionShell onSubmit={() => {}} inputDisabled loading>
-    <text>Helllo</text>
-   </SessionShell>
-  )
-}
+    <SessionShell onSubmit={() => {}} inputDisabled loading>
+      <UserMessage message={state.message} />
+    </SessionShell>
+  );
+};
+
 
 export default NewSession
