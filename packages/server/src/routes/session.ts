@@ -3,8 +3,9 @@ import { findSupportedChatModel } from "@autocode/shared"
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import { HTTPException } from "hono/http-exception"
-import { Mode, Role, Model, MessageStatus } from "@autocode/database/enums"
+import { Mode, Role,  MessageStatus } from "@autocode/database/enums"
 import { db } from "@autocode/database"
+import * as Sentry from "@sentry/hono/bun"
 
 type MockMessage = {
     id: string,
@@ -48,6 +49,11 @@ const createSessionSchema = z.object({
 
 const createSessionValidator = zValidator("json", createSessionSchema, (result, c) => {
     if (!result.success) {
+        Sentry.logger.warn("Session Creation Validation failed", {
+            path: c.req.path,
+            issues: result.error.issues.length
+        })
+
         c.json({ message: "Invalid request body", errors: result.error.message }, 400)
     }
 })
@@ -81,6 +87,9 @@ const app = new Hono()
     })
 
     if (!session){
+        Sentry.logger.warn("Session not found", {
+            sessionId: id 
+        })
         return c.json({ error: "Session not found"}, 404)
     }
 
