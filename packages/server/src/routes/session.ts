@@ -3,7 +3,8 @@ import { findSupportedChatModel } from "@autocode/shared"
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import { HTTPException } from "hono/http-exception"
-
+import { Mode, Role, Model, MessageStatus } from "@autocode/database/enums"
+import { db } from "@autocode/database"
 
 type MockMessage = {
     id: string,
@@ -35,9 +36,9 @@ const createSessionSchema = z.object({
     cwd: z.string().optional(),
     initialMessage: z
     .object({
-        role: z.string(),
+        role: z.enum(Role),
         content: z.string(),
-        mode: z.string(),
+        mode: z.enum(Mode),
         model: z.string()
             .refine((modelId) => !!findSupportedChatModel(modelId), {
                 message: "Unsupported chat model"
@@ -52,9 +53,17 @@ const createSessionValidator = zValidator("json", createSessionSchema, (result, 
 })
 
 const app = new Hono()
-.get("/", (c) => {
-    const result = sessions.map(({ id, title, createdAt }) => ({ id, title, createdAt }))
-    return c.json(result) 
+.get("/", async (c) => {
+    const sessions = await db.session.findMany({
+        orderBy: { createdAt: "desc"},
+        select: {
+            id: true,
+            title: true, 
+            createdAt: true 
+        }
+    })
+
+    return c.json(sessions) 
 })
 .get("/:id", async (c) => {
     // MOCK: Uncomment to simulate slow session loading 
@@ -64,7 +73,12 @@ const app = new Hono()
     ///throw new HTTPException(500, { message: "Mock error: session loading failed" })
 
     const id = c.req.param("id")
-    const session = sessions.find((s) => s.id === id)
+    const session = await db.session.findUnique({
+        where: { id: id },
+        include: {
+            messages: { orderBy: { createdAt: "asc" }}
+        }
+    })
 
     if (!session){
         return c.json({ error: "Session not found"}, 404)
@@ -80,36 +94,23 @@ const app = new Hono()
     ///throw new HTTPException(500, { message: "Mock error: session loading failed" })
   
     const { initialMessage, ...data } = c.req.valid("json")
-    const id = String(nextId++)
-    const now = new Date().toISOString()
 
-    const messages:MockMessage[] = [];
-    if(initialMessage){
-        messages.push({
-            id: String(nextId++),
-            role: initialMessage.role,
-            content: initialMessage.content,
-            mode: initialMessage.mode,
-            model: initialMessage.model,
-            status: "COMPLETE",
-            parts: null,
-            duration: null,
-            createdAt: now,
-            sessionId: id 
-        })
-    }
+    const session = await db.session.create({
+        data: {
+            ...data, 
+            userId: "mock-user",
+            ...(initialMessage && {
+                messages: {
+                    create: {
+                        ...initialMessage, 
+                        status: MessageStatus.COMPLETE
+                    }
+                },
+            })
+        },
+        include: { messages: true }
+    })
 
-
-    const session: MockSession = {
-        id,
-        title: data.title,
-        cwd: data.cwd ?? null,
-        userId: "mock-user",
-        createdAt: now,
-        messages
-    }
-
-    sessions.push(session)
     return c.json(session, 201)
 })
 
