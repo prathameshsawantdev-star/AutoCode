@@ -3,6 +3,7 @@ import { HTTPException } from "hono/http-exception"
 import session from "./routes/session"
 import { sentry } from "@sentry/hono/bun";
 import * as Sentry from "@sentry/hono/bun";
+import chat from "./routes/chat"
 
 const app = new Hono() 
 
@@ -44,7 +45,7 @@ app.onError((err, c) => {
 
 })
 
-const router = app.route("/sessions", session)
+const router = app.route("/sessions", session).route("/chat", chat)
 export type AppType = typeof router 
 
 export default { port: 3000, fetch: app.fetch, idleTimeout: 255 }
